@@ -1,0 +1,1 @@
+"""slugkit: tiny text helpers."""

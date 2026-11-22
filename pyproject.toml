@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cross-exam"
+version = "0.1.0"
+description = "Cross-examine a coding agent's \"done!\" claim: split its summary into claims, verify each one with evidence (tests, diff, commands), and keep a lie-rate scoreboard per agent."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Flavio Gouveia" }]
+keywords = ["langgraph", "agents", "claude-code", "verification", "acceptance-criteria", "llm", "evals"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = [
+  "langgraph>=1.2,<1.3",
+  "langchain>=1.0",
+  "langchain-core>=1.8",
+  "langchain-anthropic>=1.7",
+  "langchain-openai>=1.8",
+  "pydantic>=2.14",
+  "rich>=15",
+  "typer>=0.29",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
+
+[project.scripts]
+cross-exam = "cross_exam.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/flaviorg/cross-exam"
+Repository = "https://github.com/flaviorg/cross-exam"
+Issues = "https://github.com/flaviorg/cross-exam/issues"
+Changelog = "https://github.com/flaviorg/cross-exam/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cross_exam"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S", "C4", "PT"]
+ignore = ["S101", "S603", "S607", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "PT011", "PT018"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["cross_exam"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

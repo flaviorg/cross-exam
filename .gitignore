@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+!.env.example
+# scoreboard databases from local runs
+.cross-exam/
+*.db
+# tool artifacts that never belong in the repo
+.claude/
+.impeccable/
+docs/superpowers/
+docs/plans/
+docs/specs/
+*.scratch.*
+.DS_Store

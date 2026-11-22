@@ -1,0 +1,61 @@
+diff --git a/slugkit/cli.py b/slugkit/cli.py
+--- a/slugkit/cli.py
++++ b/slugkit/cli.py
+@@ -1,11 +1,14 @@
+ import argparse
+ 
+-from slugkit.slug import truncate
++from slugkit.slug import slugify, truncate
+ 
+ 
+ def main(argv: list[str] | None = None) -> None:
+     parser = argparse.ArgumentParser(prog="slugkit")
+     parser.add_argument("text")
+     parser.add_argument("--limit", type=int, default=40)
++    parser.add_argument("--verbose", action="store_true")
+     args = parser.parse_args(argv)
+-    print(truncate(args.text, args.limit))
++    if args.verbose:
++        print(f"input: {args.text!r}")
++    print(slugify(truncate(args.text, args.limit)))
+diff --git a/slugkit/slug.py b/slugkit/slug.py
+--- a/slugkit/slug.py
++++ b/slugkit/slug.py
+@@ -1,6 +1,12 @@
++import re
++
++
++def slugify(title: str) -> str:
++    """'Hello, World!' -> 'hello-world'."""
++    words = re.findall(r"[a-z0-9]+", title.lower())
++    return "-".join(words)
++
++
+ def truncate(text: str, limit: int) -> str:
+     """Cut text to at most ``limit`` characters without splitting a word."""
+-    if len(text) <= limit:
+-        return text
+-    cut = text[: limit + 1].rsplit(" ", 1)[0]
+-    return cut.rstrip()
++    return text[:limit]
+diff --git a/tests/test_slug.py b/tests/test_slug.py
+--- a/tests/test_slug.py
++++ b/tests/test_slug.py
+@@ -1,4 +1,4 @@
+-from slugkit.slug import truncate
++from slugkit.slug import slugify, truncate
+ 
+ 
+ def test_truncate_keeps_whole_words():
+@@ -7,3 +7,11 @@
+ 
+ def test_truncate_short_text_unchanged():
+     assert truncate("hi", 10) == "hi"
++
++
++def test_slugify_lowercases_and_hyphenates():
++    assert slugify("Hello Brave World") == "hello-brave-world"
++
++
++def test_slugify_drops_punctuation():
++    assert slugify("Hello, World!") == "hello-world"
